@@ -98,3 +98,24 @@ Times are Eastern.
   at 1440 px and the game at 390 px. A complete 36-treatment run at 390 px
   passed with PNG download, sign-out, and no horizontal overflow.
 - Unrun — Phase 5 manual release verification.
+- 10:49 p.m. — The [Phase 4 GitHub Actions run](https://github.com/shreek3724/IS218CreativeGameSlice2/actions/runs/44232879613) passed and deployed commit `d7b394d`. The live Chromium run completed all 36 treatments at 390 px, downloaded the PNG, and signed out.
+
+## Phase 4 owner review
+
+- The owner confirmed sign-in, gameplay, replay, results, and sign-out on
+  the public site.
+
+## Phase 5 — November 17, 2026
+
+- 10:57 p.m. — Release checks passed for the production build. Ran
+  `npm run format:check`, `npm run lint`, `npm run check` (0 errors and
+  0 warnings), `npm run test:unit` (8 passed), `npm run build`,
+  `npm run test:e2e` (3 passed), and `npm run test:a11y` (1 passed,
+  scanning all three views).
+- Exercised the public game in an interactive browser using the displayed
+  clues. Signed in, completed all 36 treatments, saw the session result
+  of 100 / 100, downloaded `golden-valley-restored.png`, replayed from
+  zero cells cleared, and signed out. Signed in again and refreshed the
+  game page to confirm that it required a new sign-in.
+- Release commit deployment is verified by the matching
+  [GitHub Actions run](https://github.com/shreek3724/IS218CreativeGameSlice2/actions).
