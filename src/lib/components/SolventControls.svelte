@@ -16,15 +16,12 @@
   let total = $derived((mix.water || 0) + (mix.oil || 0) + (mix.acid || 0));
   let remaining = $derived(100 - total);
 
-  function maximumFor(ingredient: keyof SolventMix) {
-    return remaining + (mix[ingredient] || 0);
-  }
-
   function update(ingredient: keyof SolventMix, input: HTMLInputElement) {
     const value = input.valueAsNumber;
+    const available = remaining + (mix[ingredient] || 0);
     const percentage = Number.isNaN(value)
       ? value
-      : Math.max(0, Math.min(maximumFor(ingredient), Math.trunc(value)));
+      : Math.max(0, Math.min(available, Math.trunc(value)));
 
     if (!Number.isNaN(percentage) && value !== percentage) {
       input.value = String(percentage);
@@ -43,7 +40,7 @@
         type="range"
         aria-label={`${label} slider`}
         min="0"
-        max={maximumFor(id)}
+        max="100"
         step="1"
         value={Number.isNaN(mix[id]) ? 0 : mix[id]}
         oninput={(event) => update(id, event.currentTarget)}
@@ -53,7 +50,7 @@
         type="number"
         aria-label={`${label} percentage`}
         min="0"
-        max={maximumFor(id)}
+        max="100"
         step="1"
         inputmode="numeric"
         value={Number.isNaN(mix[id]) ? undefined : mix[id]}
@@ -73,6 +70,9 @@
         {remaining === 1 ? "percentage point" : "percentage points"}.
       {:else}
         Enter 0 for any blank solvent.
+      {/if}
+      {#if remaining === 0}
+        <small>Maximum mixture total is 100%.</small>
       {/if}
     </p>
   </div>

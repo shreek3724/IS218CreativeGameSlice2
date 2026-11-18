@@ -142,3 +142,12 @@ Times are Eastern.
   Playwright verified the integrity bar above the painting, the persistent
   tool reminder, and the mixture bar and combined cap with both input methods.
 - GitHub Actions and live Pages verification were pending at local sign-off.
+
+## Independent solvent sliders — November 18, 2026
+
+- 3:50 p.m. — `npm run format:check`, `npm run lint`, `npm run check`
+  (0 errors and 0 warnings), `npm run test:unit` (8 passed), `npm run build`,
+  `npm run test:e2e` (5 passed), and `npm run test:a11y` (1 passed) all passed.
+  Playwright verified the fixed slider scales, independent values, cap
+  feedback, and persistent tool reminder. GitHub Actions and live Pages
+  verification were pending at local sign-off.

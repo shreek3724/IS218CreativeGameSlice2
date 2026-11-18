@@ -93,7 +93,7 @@ test("instructions block play until X is clicked and the note appears above the 
   await expect(hint).toBeVisible();
 });
 
-test("mixture progress reflects both input methods and caps the combined total", async ({
+test("sliders keep independent 0–100 scales and both input methods cap the total", async ({
   page,
 }) => {
   await page.goto("./");
@@ -104,8 +104,10 @@ test("mixture progress reflects both input methods and caps the combined total",
   const water = page.getByRole("spinbutton", { name: "Water percentage" });
   const oil = page.getByRole("spinbutton", { name: "Oil percentage" });
   const acid = page.getByRole("spinbutton", { name: "Acid percentage" });
+  const waterSlider = page.getByRole("slider", { name: "Water slider" });
   const oilSlider = page.getByRole("slider", { name: "Oil slider" });
   const acidSlider = page.getByRole("slider", { name: "Acid slider" });
+  const maximumNote = page.getByText("Maximum mixture total is 100%.");
 
   await expect(progress).toHaveAttribute("value", "0");
   await expect(page.getByText("Add 100 percentage points.")).toBeVisible();
@@ -118,14 +120,25 @@ test("mixture progress reflects both input methods and caps the combined total",
   await expect(oilSlider).toHaveValue("30");
   await expect(progress).toHaveAttribute("value", "100");
   await expect(page.getByText("Mixture ready.")).toBeVisible();
-  await acidSlider.press("End");
+  await expect(maximumNote).toBeVisible();
+  for (const slider of [waterSlider, oilSlider, acidSlider]) {
+    await expect(slider).toHaveAttribute("min", "0");
+    await expect(slider).toHaveAttribute("max", "100");
+    await slider.press("End");
+  }
+  await expect(waterSlider).toHaveValue("70");
+  await expect(oilSlider).toHaveValue("30");
+  await expect(acidSlider).toHaveValue("0");
   await expect(acid).toHaveValue("0");
 
   await oilSlider.press("ArrowLeft");
   await expect(oil).toHaveValue("29");
   await expect(page.getByText("Add 1 percentage point.")).toBeVisible();
+  await expect(maximumNote).toBeHidden();
   await acidSlider.press("End");
   await expect(acid).toHaveValue("1");
+  await expect(waterSlider).toHaveValue("70");
+  await expect(oilSlider).toHaveValue("29");
   await expect(progress).toHaveAttribute("value", "100");
 });
 
