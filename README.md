@@ -1,1 +1,38 @@
-# IS218CreativeGameSlice2
+# Art Conservator
+
+A static SvelteKit project for the Art Conservator restoration game. Phase 1 provides the site shell and testing tools.
+
+## Run locally
+
+Use Node.js 22.13 or later on the Node 22 release line.
+
+```sh
+npm ci
+npm run dev
+```
+
+## Verify the production build
+
+```sh
+npx playwright install chromium
+npm run format:check
+npm run lint
+npm run check
+npm run test:unit
+npm run build
+npm run test:e2e
+npm run test:a11y
+```
+
+Run `npm run preview` to open the production build at
+`http://localhost:4173/IS218CreativeGameSlice2/`. The game and results placeholders
+are directly available at `game/` and `results/` under that path.
+
+## Publish on GitHub Pages
+
+In the repository's **Settings → Pages**, select **GitHub Actions** as the source.
+The workflow verifies pull requests and publishes the checked static artifact
+from `main`. It defaults to the repository path for a project site and to
+`/` for a user or organization site. For a custom domain, set the repository
+Actions variable `PAGES_BASE` to `/`. To test an override locally, set the same
+environment variable for the build and Playwright runs.

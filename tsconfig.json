@@ -1,0 +1,10 @@
+{
+  "extends": "$app/tsconfig",
+  "include": ["src", "tests", "*.ts"],
+  "exclude": ["src/service-worker"],
+  "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}
