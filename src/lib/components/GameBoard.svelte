@@ -99,6 +99,14 @@
           cleared
         </p>
       </section>
+      <section class="panel notes" aria-label="Current note">
+        <h3>Current note</h3>
+        <ul aria-label="Layer clues">
+          {#each snapshot.activeLayer.clues as clue (clue)}
+            <li>{clue}</li>
+          {/each}
+        </ul>
+      </section>
       <fieldset class="panel tools">
         <legend>Tool</legend>
         {#each tools as tool (tool.id)}
@@ -139,14 +147,6 @@
       <p class="feedback" role="status" aria-label="Treatment feedback">
         {feedback}
       </p>
-      <section class="panel notes" aria-label="Current note">
-        <h4>Current note</h4>
-        <ul aria-label="Layer clues">
-          {#each snapshot.activeLayer.clues as clue (clue)}
-            <li>{clue}</li>
-          {/each}
-        </ul>
-      </section>
     </div>
   </div>
 {/if}
@@ -183,7 +183,7 @@
   }
 
   .layer :is(p, h3),
-  .notes h4,
+  .notes h3,
   .feedback {
     margin: 0;
   }

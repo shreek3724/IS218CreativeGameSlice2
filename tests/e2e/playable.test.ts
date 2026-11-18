@@ -41,6 +41,44 @@ async function signIn(page: Page, name = "Ada") {
   await expect(page).toHaveURL(/\/game\/$/);
 }
 
+async function dismissInstructions(page: Page) {
+  const instructions = page.getByRole("dialog", { name: "How to Play!" });
+  await instructions
+    .getByRole("button", { name: "Close instructions" })
+    .click();
+  await expect(instructions).toBeHidden();
+}
+
+test("instructions block play until X is clicked and the note appears above the tools", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.goto("./");
+  await signIn(page);
+
+  const instructions = page.getByRole("dialog", { name: "How to Play!" });
+  const close = instructions.getByRole("button", {
+    name: "Close instructions",
+  });
+  await expect(instructions.getByRole("listitem")).toHaveCount(5);
+  await expect(close).toBeFocused();
+  const cell = page.getByRole("button", { name: "Row 1, column 1" });
+  await cell.evaluate((button) => button.focus());
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(instructions).toBeVisible();
+
+  await dismissInstructions(page);
+  const note = page.getByRole("region", { name: "Current note" });
+  const tools = page.getByRole("group", { name: "Tool", exact: true });
+  await expect(note).toBeVisible();
+  expect((await note.boundingBox())!.y).toBeLessThan(
+    (await tools.boundingBox())!.y,
+  );
+  await cell.click();
+  await expect(cell).toHaveAttribute("aria-pressed", "true");
+});
+
 async function mixSolvent(page: Page, mix: number[]) {
   for (const [index, ingredient] of ["Water", "Oil", "Acid"].entries()) {
     await page
@@ -100,6 +138,7 @@ test("restoration reveals each coating, exports the clean PNG, and supports repl
 }) => {
   await page.goto("./");
   await signIn(page);
+  await dismissInstructions(page);
   const original = await sampleCells(page);
   await restore(page, true);
   await expect(page.getByText("100 / 100", { exact: true })).toBeVisible();
@@ -119,6 +158,7 @@ test("restoration reveals each coating, exports the clean PNG, and supports repl
   );
 
   await page.getByRole("button", { name: "Play again" }).click();
+  await dismissInstructions(page);
   await expect(
     page.getByRole("heading", { name: "Surface Dirt" }),
   ).toBeVisible();
@@ -138,6 +178,7 @@ test("keyboard selection and synchronized inputs support recovery after a wrong 
 }) => {
   await page.goto("./");
   await signIn(page);
+  await dismissInstructions(page);
   const apply = page.getByRole("button", { name: "Apply Solvent" });
   const waterSlider = page.getByRole("slider", { name: "Water slider" });
   const waterInput = page.getByRole("spinbutton", { name: "Water percentage" });
@@ -193,6 +234,8 @@ test("actual sign-in, game, and completed results pass axe @axe", async ({
   await page.goto("./");
   await scan();
   await signIn(page);
+  await scan();
+  await dismissInstructions(page);
   await scan();
   await restore(page);
   await scan();

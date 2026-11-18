@@ -119,3 +119,17 @@ Times are Eastern.
   game page to confirm that it required a new sign-in.
 - Release commit deployment is verified by the matching
   [GitHub Actions run](https://github.com/shreek3724/IS218CreativeGameSlice2/actions).
+
+## Gameplay instructions — November 18, 2026
+
+- 3:27–3:28 p.m. — Formatting, lint, strict type checks, 8 unit tests, and
+  the static build passed. The first browser attempts were blocked by
+  loopback permissions and a missing Chromium version. After installing
+  Chromium, 3 of 4 E2E tests passed. Updated the new test to check whether
+  the modal actually blocks focus on the board.
+- 3:29–3:30 p.m. — `npm run format:check`, `npm run lint`, `npm run check`
+  (0 errors and 0 warnings), `npm run test:unit` (8 passed), `npm run build`,
+  `npm run test:e2e` (4 passed), and `npm run test:a11y` (1 passed) all passed.
+  The browser checks cover modal dismissal and Note placement at 390 px.
+  Axe scanned sign-in, the open modal, the game board, and results.
+- GitHub Actions and live Pages verification were pending at local sign-off.

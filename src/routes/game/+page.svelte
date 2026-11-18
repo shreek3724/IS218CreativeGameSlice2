@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
   import GameBoard from "../../lib/components/GameBoard.svelte";
+  import HowToPlay from "../../lib/components/HowToPlay.svelte";
   import SessionRequired from "../../lib/components/SessionRequired.svelte";
   import SignOutButton from "../../lib/components/SignOutButton.svelte";
   import { getPlayer } from "../../lib/stores/player-context";
@@ -30,4 +31,5 @@
 {:else}
   <GameBoard game={$player.game} {complete} />
   <SignOutButton />
+  <HowToPlay />
 {/if}
