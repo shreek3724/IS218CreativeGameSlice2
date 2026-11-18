@@ -36,3 +36,22 @@ Times are Eastern.
 
 - The owner opened the local preview in Chrome, navigated to Game and then
   Results, and confirmed that refreshing Results reopened the same view.
+
+## GitHub Pages verification — November 17, 2026
+
+- 10:05 p.m. — The [Pages workflow](https://github.com/shreek3724/IS218CreativeGameSlice2/actions/runs/44227689406)
+  passed the check and deploy jobs for commit `fd71b8b`. GitHub ran the
+  actions declaring Node 20 on Node 24 and reported a deprecation warning.
+- 10:06 p.m. — Live Chromium verification passed. The sign-in, game, and
+  results URLs each returned HTTP 200 on direct load and refresh.
+
+## Phase 2 — November 17, 2026
+
+- 10:12 p.m. — ESLint, strict TypeScript and Svelte checks, Vitest (8 tests
+  including the Phase 1 baseline), and the production build passed. The
+  Phase 2 tests cover Golden Valley's 36 treatments, ordered layers, rejected
+  moves, scoring at positive and zero integrity, restart, the internal
+  four-layer fixture, and simulated sign-out.
+- The solvent total, range, and whole-number rules are covered by unit tests.
+  Slider and typed-field synchronization and the playable browser journey
+  await the Phase 3 interface.

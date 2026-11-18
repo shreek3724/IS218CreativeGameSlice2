@@ -1,0 +1,55 @@
+import { definePainting } from "../../../src/lib/content/define-painting";
+
+// Internal fixture only. This painting is not included in the public game.
+export const fourLayerPainting = definePainting({
+  id: "four-layer-test-fixture",
+  title: "Four-layer test fixture",
+  columns: 2,
+  rows: 2,
+  layers: [
+    {
+      id: "dust",
+      title: "Dust",
+      type: "surface_dirt",
+      cells: [{ x: 0, y: 0 }],
+      tool: "swab",
+      mix: { water: 90, oil: 10, acid: 0 },
+      clues: ["Treat the top-left cell with a damp swab."],
+      overlay: "Dust",
+      integrityPenalty: 15,
+    },
+    {
+      id: "retouch",
+      title: "Retouch",
+      type: "overpaint",
+      cells: [{ x: 1, y: 0 }],
+      tool: "brush",
+      mix: { water: 60, oil: 30, acid: 10 },
+      clues: ["Brush the retouch in the top-right cell."],
+      overlay: "Retouch",
+      integrityPenalty: 5,
+    },
+    {
+      id: "varnish",
+      title: "Varnish",
+      type: "aged_varnish",
+      cells: [{ x: 0, y: 1 }],
+      tool: "heat_lamp",
+      mix: { water: 40, oil: 20, acid: 40 },
+      clues: ["Warm the varnish in the bottom-left cell."],
+      overlay: "Varnish",
+      integrityPenalty: 20,
+    },
+    {
+      id: "residue",
+      title: "Residue",
+      type: "surface_dirt",
+      cells: [{ x: 1, y: 1 }],
+      tool: "swab",
+      mix: { water: 80, oil: 20, acid: 0 },
+      clues: ["Swab the residue in the bottom-right cell."],
+      overlay: "Residue",
+      integrityPenalty: 10,
+    },
+  ],
+});
