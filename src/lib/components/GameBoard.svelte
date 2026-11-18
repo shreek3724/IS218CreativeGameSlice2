@@ -73,6 +73,12 @@
   <div class="controls">
     <section class="panel artwork" aria-label="Painting">
       <h2>{game.painting.title}</h2>
+      <div class="integrity">
+        <label for="painting-integrity">Painting integrity</label>
+        <strong>{snapshot.integrity}%</strong>
+        <progress id="painting-integrity" value={snapshot.integrity} max="100"
+        ></progress>
+      </div>
       <CellGrid
         painting={game.painting}
         layerIndex={snapshot.layerIndex}
@@ -80,12 +86,6 @@
         clearedCells={snapshot.clearedCells}
         select={selectCell}
       />
-      <div class="integrity">
-        <label for="painting-integrity">Painting integrity</label>
-        <strong>{snapshot.integrity}%</strong>
-        <progress id="painting-integrity" value={snapshot.integrity} max="100"
-        ></progress>
-      </div>
     </section>
 
     <div class="treatment">
@@ -107,6 +107,7 @@
           {/each}
         </ul>
       </section>
+      <p class="tool-hint">Select a cell and a tool before applying solvent.</p>
       <fieldset class="panel tools">
         <legend>Tool</legend>
         {#each tools as tool (tool.id)}
@@ -128,9 +129,6 @@
         change={mixSolvent}
       />
 
-      {#if !snapshot.selectedCell || !snapshot.selectedTool}
-        <p>Select a cell and a tool before applying solvent.</p>
-      {/if}
       <div class="actions">
         <button
           type="button"
@@ -173,7 +171,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0.45rem;
-    margin-block-start: 1.25rem;
+    margin-block-end: 1rem;
   }
 
   progress {
@@ -184,6 +182,7 @@
 
   .layer :is(p, h3),
   .notes h3,
+  .tool-hint,
   .feedback {
     margin: 0;
   }

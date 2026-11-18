@@ -69,14 +69,64 @@ test("instructions block play until X is clicked and the note appears above the 
   await expect(instructions).toBeVisible();
 
   await dismissInstructions(page);
+  const integrity = page.getByRole("progressbar", {
+    name: "Painting integrity",
+  });
+  const painting = page.locator("main canvas");
+  expect((await integrity.boundingBox())!.y).toBeLessThan(
+    (await painting.boundingBox())!.y,
+  );
   const note = page.getByRole("region", { name: "Current note" });
+  const hint = page.getByText(
+    "Select a cell and a tool before applying solvent.",
+  );
   const tools = page.getByRole("group", { name: "Tool", exact: true });
-  await expect(note).toBeVisible();
   expect((await note.boundingBox())!.y).toBeLessThan(
+    (await hint.boundingBox())!.y,
+  );
+  expect((await hint.boundingBox())!.y).toBeLessThan(
     (await tools.boundingBox())!.y,
   );
   await cell.click();
   await expect(cell).toHaveAttribute("aria-pressed", "true");
+  await tools.getByRole("radio", { name: "Swab" }).check();
+  await expect(hint).toBeVisible();
+});
+
+test("mixture progress reflects both input methods and caps the combined total", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await signIn(page);
+  await dismissInstructions(page);
+
+  const progress = page.getByRole("progressbar", { name: "Mixture progress" });
+  const water = page.getByRole("spinbutton", { name: "Water percentage" });
+  const oil = page.getByRole("spinbutton", { name: "Oil percentage" });
+  const acid = page.getByRole("spinbutton", { name: "Acid percentage" });
+  const oilSlider = page.getByRole("slider", { name: "Oil slider" });
+  const acidSlider = page.getByRole("slider", { name: "Acid slider" });
+
+  await expect(progress).toHaveAttribute("value", "0");
+  await expect(page.getByText("Add 100 percentage points.")).toBeVisible();
+  await water.fill("70");
+  await expect(progress).toHaveAttribute("value", "70");
+  await expect(page.getByText("Add 30 percentage points.")).toBeVisible();
+
+  await oil.fill("80");
+  await expect(oil).toHaveValue("30");
+  await expect(oilSlider).toHaveValue("30");
+  await expect(progress).toHaveAttribute("value", "100");
+  await expect(page.getByText("Mixture ready.")).toBeVisible();
+  await acidSlider.press("End");
+  await expect(acid).toHaveValue("0");
+
+  await oilSlider.press("ArrowLeft");
+  await expect(oil).toHaveValue("29");
+  await expect(page.getByText("Add 1 percentage point.")).toBeVisible();
+  await acidSlider.press("End");
+  await expect(acid).toHaveValue("1");
+  await expect(progress).toHaveAttribute("value", "100");
 });
 
 async function mixSolvent(page: Page, mix: number[]) {
