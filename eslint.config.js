@@ -16,6 +16,7 @@ export default [
   ...svelte.configs["flat/recommended"],
   {
     files: ["**/*.svelte"],
+    rules: { "no-undef": "off" },
     languageOptions: { parserOptions: { parser: ts.parser } },
   },
 ];

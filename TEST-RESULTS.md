@@ -55,3 +55,24 @@ Times are Eastern.
 - The solvent total, range, and whole-number rules are covered by unit tests.
   Slider and typed-field synchronization and the playable browser journey
   await the Phase 3 interface.
+
+- 10:14 p.m. — The [Phase 2 GitHub Actions run](https://github.com/shreek3724/IS218CreativeGameSlice2/actions/runs/44228880094) passed all checks and deployed the static site for commit `746bb60`. Browser and accessibility checks exercised the existing placeholder views.
+- 10:16 p.m. — Reran `npm run test:unit` during the Phase 2 spec review.
+  All 8 tests passed.
+
+## Phase 3 — November 17, 2026
+
+- 10:22–10:23 p.m. — Initial lint and type checks caught missing TypeScript
+  handling in Svelte linting, unresolved imports, and a rune naming conflict.
+  After fixes, formatting, lint, type checks, all 8 unit tests, and the
+  static production build passed.
+- 10:24–10:25 p.m. — The three functional Playwright tests passed. Axe found
+  a mismatch between visible grid button labels and their accessible names.
+  Updated the grid so the visible and accessible labels match, then rebuilt.
+- 10:26–10:27 p.m. — `npm run format:check`, `npm run lint`,
+  `npm run check`, `npm run test:unit` (8 passed), and
+  `npx playwright test` (4 passed) passed on the updated build. The browser
+  checks cover direct routes and refresh, a perfect 36-treatment restoration,
+  replay, sign-out, slider and field synchronization, keyboard selection,
+  invalid-move recovery, restart, and axe scans of all three playable views.
+- Phase 4 checks for Canvas artwork and PNG export are pending.

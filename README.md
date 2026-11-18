@@ -1,6 +1,7 @@
 # Art Conservator
 
-A static SvelteKit project for the Art Conservator restoration game. Phase 1 provides the site shell and testing tools.
+A static SvelteKit restoration game. Enter a display name, use the clues to
+restore Golden Valley, and view your session result.
 
 ## Run locally
 
@@ -25,8 +26,9 @@ npm run test:a11y
 ```
 
 Run `npm run preview` to open the production build at
-`http://localhost:4173/IS218CreativeGameSlice2/`. The game and results placeholders
-are directly available at `game/` and `results/` under that path.
+`http://localhost:4173/IS218CreativeGameSlice2/`. Start from this page so
+the game and results views share the same session. Refreshing or signing out
+clears the session.
 
 ## Publish on GitHub Pages
 

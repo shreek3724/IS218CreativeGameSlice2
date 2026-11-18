@@ -3,6 +3,7 @@ import {
   isSolventReady,
   type Cell,
   type Painting,
+  type PaintingLayer,
   type SolventMix,
   type Tool,
 } from "./painting";
@@ -47,7 +48,7 @@ export class GameSession {
     this.painting = painting;
   }
 
-  get activeLayer() {
+  get activeLayer(): PaintingLayer | null {
     return this.painting.layers[this.#layerIndex] ?? null;
   }
 
