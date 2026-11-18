@@ -28,24 +28,25 @@
   }
 </script>
 
-<fieldset aria-describedby="solvent-total">
+<fieldset class="panel" aria-describedby="solvent-total">
   <legend>Solvent mixture</legend>
   {#each ingredients as { id, label } (id)}
     <div class="ingredient">
-      <label for={`${id}-slider`}>{label} slider</label>
+      <label for={`${id}-slider`}>{label}</label>
       <input
         id={`${id}-slider`}
         type="range"
+        aria-label={`${label} slider`}
         min="0"
         max="100"
         step="1"
         value={Number.isNaN(mix[id]) ? 0 : mix[id]}
         oninput={(event) => update(id, event.currentTarget)}
       />
-      <label for={`${id}-percentage`}>{label} percentage</label>
       <input
         id={`${id}-percentage`}
         type="number"
+        aria-label={`${label} percentage`}
         min="0"
         max="100"
         step="1"
@@ -71,11 +72,18 @@
 <style>
   fieldset {
     min-inline-size: 0;
+    border: 1px solid var(--line);
+    margin: 0;
+  }
+
+  legend {
+    padding-inline: 0.25rem;
+    font-weight: 750;
   }
 
   .ingredient {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 3rem minmax(0, 1fr) 4.5rem;
     gap: 0.25rem 0.75rem;
     margin-block: 0.5rem;
     align-items: center;

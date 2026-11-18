@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -48,7 +49,18 @@ async function mixSolvent(page: Page, mix: number[]) {
   }
 }
 
-async function restore(page: Page) {
+async function sampleCells(page: Page) {
+  return page.locator("main canvas").evaluate((canvas: HTMLCanvasElement) => {
+    const ctx = canvas.getContext("2d")!;
+    return Array.from({ length: 16 }, (_, index) => {
+      const x = ((index % 4) + 0.5) * (canvas.width / 4);
+      const y = (Math.floor(index / 4) + 0.5) * (canvas.height / 4);
+      return Array.from(ctx.getImageData(x, y, 1, 1).data);
+    });
+  });
+}
+
+async function restore(page: Page, verifyReveal = false) {
   for (const layer of layers) {
     await expect(
       page.getByRole("heading", { name: layer.title }),
@@ -56,11 +68,20 @@ async function restore(page: Page) {
     await expect(page.getByText(layer.clue, { exact: true })).toBeVisible();
     await page.getByRole("radio", { name: layer.tool }).check();
     await mixSolvent(page, layer.mix);
-    for (const [row, column] of layer.cells) {
+    for (const [index, [row, column]] of layer.cells.entries()) {
+      const checkCell = verifyReveal && index === 0;
+      const before = checkCell ? await sampleCells(page) : null;
       await page
         .getByRole("button", { name: `Row ${row}, column ${column}` })
         .click();
       await page.getByRole("button", { name: "Apply Solvent" }).click();
+      if (before) {
+        const after = await sampleCells(page);
+        const changed = after.flatMap((pixel, i) =>
+          pixel.some((channel, j) => channel !== before[i][j]) ? [i] : [],
+        );
+        expect(changed).toEqual([(row - 1) * 4 + column - 1]);
+      }
     }
     if (layer.title === "Surface Dirt") {
       await expect(
@@ -74,14 +95,28 @@ async function restore(page: Page) {
   ).toBeVisible();
 }
 
-test("perfect restoration saves a result, supports replay, and clears on sign-out", async ({
+test("restoration reveals each coating, exports the clean PNG, and supports replay and sign-out", async ({
   page,
 }) => {
   await page.goto("./");
   await signIn(page);
-  await restore(page);
+  const original = await sampleCells(page);
+  await restore(page, true);
   await expect(page.getByText("100 / 100", { exact: true })).toBeVisible();
   await expect(page.getByText("36 / 36", { exact: true })).toBeVisible();
+  expect(await sampleCells(page)).not.toEqual(original);
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download PNG" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("golden-valley-restored.png");
+  const exported = await readFile((await download.path())!);
+  const dataUrl = await page
+    .locator("main canvas")
+    .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL("image/png"));
+  expect(exported.equals(Buffer.from(dataUrl.split(",")[1], "base64"))).toBe(
+    true,
+  );
 
   await page.getByRole("button", { name: "Play again" }).click();
   await expect(
@@ -120,7 +155,9 @@ test("keyboard selection and synchronized inputs support recovery after a wrong 
   await mixSolvent(page, [70, 30, 0]);
   await expect(waterSlider).toHaveValue("70");
   await expect(apply).toBeEnabled();
+  const beforeMistake = await sampleCells(page);
   await apply.click();
+  expect(await sampleCells(page)).toEqual(beforeMistake);
   const feedback = page.getByRole("status", { name: "Treatment feedback" });
   await expect(feedback).toContainText("Wrong tool");
   await expect(page.getByText("90%", { exact: true })).toBeVisible();

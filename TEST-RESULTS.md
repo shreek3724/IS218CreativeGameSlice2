@@ -76,3 +76,25 @@ Times are Eastern.
   replay, sign-out, slider and field synchronization, keyboard selection,
   invalid-move recovery, restart, and axe scans of all three playable views.
 - Phase 4 checks for Canvas artwork and PNG export are pending.
+- 10:33 p.m. — The [Phase 3 GitHub Actions run](https://github.com/shreek3724/IS218CreativeGameSlice2/actions/runs/44230580696) passed and deployed commit `c65cdd3`. A live Chromium playthrough at 390 px passed sign-in, all 36 treatments, a saved score of 100, and sign-out.
+
+## Phase 3 owner review
+
+- The owner confirmed they signed in, played a round, selected replay, and
+  signed out back to the home screen on the deployed site.
+
+## Phase 4 — November 17, 2026
+
+- 10:43–10:44 p.m. — Formatting, lint, strict type checking, the 8 unit
+  tests, and static builds passed. The first browser run passed the 3
+  functional tests. Axe flagged the navigation link contrast, which was
+  corrected by darkening the link color.
+- 10:44–10:47 p.m. — Reran formatting, lint, type checks, the 8 unit tests,
+  and the static build after contrast and control layout changes. All 4
+  Playwright tests passed. They verified that each coating changes only
+  in the treated cell, incorrect moves leave canvas pixels intact,
+  and the downloaded PNG matches the clean results canvas.
+- 10:47 p.m. — Reviewed screenshots of the home, game, and results screens
+  at 1440 px and the game at 390 px. A complete 36-treatment run at 390 px
+  passed with PNG download, sign-out, and no horizontal overflow.
+- Unrun — Phase 5 manual release verification.

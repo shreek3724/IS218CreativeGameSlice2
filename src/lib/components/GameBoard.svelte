@@ -70,30 +70,36 @@
 </script>
 
 {#if snapshot.activeLayer}
-  <h2>{game.painting.title}</h2>
-  <h3>{snapshot.activeLayer.title}</h3>
-  <p>Layer {snapshot.layerIndex + 1} of {game.painting.layers.length}</p>
-  <ul aria-label="Layer clues">
-    {#each snapshot.activeLayer.clues as clue (clue)}
-      <li>{clue}</li>
-    {/each}
-  </ul>
-
-  <p>Integrity <strong>{snapshot.integrity}%</strong></p>
-  <p>
-    {snapshot.clearedCells.length} of {snapshot.activeLayer.cells.length} cells cleared
-  </p>
-
   <div class="controls">
-    <CellGrid
-      rows={game.painting.rows}
-      columns={game.painting.columns}
-      selected={snapshot.selectedCell}
-      clearedCells={snapshot.clearedCells}
-      select={selectCell}
-    />
+    <section class="panel artwork" aria-label="Painting">
+      <h2>{game.painting.title}</h2>
+      <CellGrid
+        painting={game.painting}
+        layerIndex={snapshot.layerIndex}
+        selected={snapshot.selectedCell}
+        clearedCells={snapshot.clearedCells}
+        select={selectCell}
+      />
+      <div class="integrity">
+        <label for="painting-integrity">Painting integrity</label>
+        <strong>{snapshot.integrity}%</strong>
+        <progress id="painting-integrity" value={snapshot.integrity} max="100"
+        ></progress>
+      </div>
+    </section>
+
     <div class="treatment">
-      <fieldset>
+      <section class="panel layer" aria-label="Restoration progress">
+        <p class="layer-count">
+          Layer {snapshot.layerIndex + 1} of {game.painting.layers.length}
+        </p>
+        <h3>{snapshot.activeLayer.title}</h3>
+        <p>
+          {snapshot.clearedCells.length} of {snapshot.activeLayer.cells.length} cells
+          cleared
+        </p>
+      </section>
+      <fieldset class="panel tools">
         <legend>Tool</legend>
         {#each tools as tool (tool.id)}
           <label>
@@ -113,26 +119,37 @@
         ready={snapshot.canApply}
         change={mixSolvent}
       />
+
+      {#if !snapshot.selectedCell || !snapshot.selectedTool}
+        <p>Select a cell and a tool before applying solvent.</p>
+      {/if}
+      <div class="actions">
+        <button
+          type="button"
+          class="primary"
+          disabled={!snapshot.canApply ||
+            !snapshot.selectedCell ||
+            !snapshot.selectedTool}
+          onclick={applyTreatment}
+        >
+          Apply Solvent
+        </button>
+        <button type="button" onclick={restart}>Restart Painting</button>
+      </div>
+      <p class="feedback" role="status" aria-label="Treatment feedback">
+        {feedback}
+      </p>
+      <section class="panel notes" aria-label="Current note">
+        <h4>Current note</h4>
+        <ul aria-label="Layer clues">
+          {#each snapshot.activeLayer.clues as clue (clue)}
+            <li>{clue}</li>
+          {/each}
+        </ul>
+      </section>
     </div>
   </div>
-
-  {#if !snapshot.selectedCell || !snapshot.selectedTool}
-    <p>Select a cell and a tool before applying solvent.</p>
-  {/if}
-  <div class="actions">
-    <button
-      type="button"
-      disabled={!snapshot.canApply ||
-        !snapshot.selectedCell ||
-        !snapshot.selectedTool}
-      onclick={applyTreatment}
-    >
-      Apply Solvent
-    </button>
-    <button type="button" onclick={restart}>Restart Painting</button>
-  </div>
 {/if}
-<p role="status" aria-label="Treatment feedback">{feedback}</p>
 
 <style>
   .controls,
@@ -142,21 +159,77 @@
     align-items: start;
   }
 
-  @media (min-width: 46rem) {
+  @media (min-width: 55rem) {
     .controls {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
     }
   }
 
-  label {
+  .artwork h2 {
+    margin-block: 0 0.75rem;
+  }
+
+  .integrity {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem;
+    margin-block-start: 1.25rem;
+  }
+
+  progress {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    accent-color: #8c64b5;
+  }
+
+  .layer :is(p, h3),
+  .notes h4,
+  .feedback {
+    margin: 0;
+  }
+
+  .layer-count {
+    font-weight: 700;
+  }
+
+  .tools {
+    min-inline-size: 0;
+    border: 1px solid var(--line);
+    margin: 0;
+  }
+
+  legend {
+    padding-inline: 0.25rem;
+    font-weight: 750;
+  }
+
+  .tools label {
     display: inline-block;
-    margin-inline-end: 0.75rem;
+    margin-inline-end: 1rem;
+    padding-block: 0.25rem;
+  }
+
+  .notes {
+    background: var(--note);
+  }
+
+  .notes ul {
+    margin-block-end: 0;
+    padding-inline-start: 1.25rem;
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-block-start: 1rem;
+  }
+
+  .actions .primary {
+    flex: 1;
+  }
+
+  .feedback {
+    min-block-size: 1.5em;
+    font-weight: 650;
   }
 </style>
