@@ -3,6 +3,10 @@
 A static SvelteKit restoration game. Enter a display name, use the clues to
 restore Golden Valley, and view your session result.
 
+- [Play Art Conservator](https://shreek3724.github.io/IS218CreativeGameSlice2/)
+- [Game planning repository](https://github.com/shreek3724/IS218-Review-1-Plan-Creative-Game)
+- [Game project record](https://github.com/shreek3724/IS218-Review-1-Plan-Creative-Game/blob/main/project_record.md)
+
 ## Run locally
 
 Use Node.js 22.13 or later on the Node 22 release line.
